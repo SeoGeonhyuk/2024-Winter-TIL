@@ -18,7 +18,7 @@ upper dir을 통해 기존 파일을 수정할 수 있는 데, 이때는 COW 작
 
 데이터가 큰 상황에서는 writable layer를 통해 이미지 레이어의 데이터를 수정할 경우 기존 읽기 전용의 데이터를 writable layer로 COPY하기 위해서 COPY UP 연산이 발생한다. 문제는 이 COPY UP 연산은 데이터의 크기가 크면 클 수록 속도가 느리다는 것이다. 이 문제를 해결하기 위해서는 스토리지 드라이버 자체를 우회하는 방법을 사용하여야 하는데 그 이유는 스토리지 드라이버 자체가 COPY UP 연산을 만드는 원인이기 때문이다. 도커 공식 문서에서는 스토리지 드라이버를 우회하는 방법으로 볼륨 마운트나 바인드 마운트를 제안하고 있다.
 
-![image.png](attachment:5549e042-45b4-41de-8573-ec5fcd95cfed:image.png)
+<img width="929" alt="0" src="https://github.com/user-attachments/assets/6403dbb9-a299-4e67-a3be-906b3d9e8ef2" />
 
 [OverlayFS storage driver](https://docs.docker.com/engine/storage/drivers/overlayfs-driver/#use-volumes-for-write-heavy-workloads)
 
@@ -71,11 +71,11 @@ CMD ["/test-bind.sh"]
 
 ### 볼륨 마운트 없이 컨테이너를 실행했을 때(5회) ⇒ 평균 19.8초(19초 + 20초 + 20초 + 21초 + 19초)
 
-![image.png](attachment:86d8b908-0ad3-4270-8825-5a6f3668fb75:image.png)
+<img width="706" alt="1" src="https://github.com/user-attachments/assets/c3b08331-5ee7-4717-a9ca-e994dd15ae7a" />
 
 ### 최초 볼륨 마운트 적용 상태로 컨테이너를 실행했을 때(5회, 결과를 확인할 수 없어 스톱워치를 통해 측정) ⇒ 평균 0.2초 미만
 
-![image.png](attachment:4a3bc276-0600-481a-aab7-8f90916328f8:image.png)
+<img width="876" alt="2" src="https://github.com/user-attachments/assets/81292b54-0647-4672-b3af-8eda5b8670c5" />
 
 결과적으로 최초 볼륨 마운트 이후 동작은 정말 빠르게 이루어지므로 볼륨 마운트 시에도 독립적인 파일 시스템을 사용해 COPY UP 연산이 일어나지 않을 가능성이 높다.(더 구체적으로 하려면 strace 등을 활용해야 할 거 같은데, 실험 결과가 워낙 극단적이어서 간단하게만 체크했습니다. 사실 프로젝트 구현 중에 진행한 실험이기도 하고 추후에 보완 작업을 할 수 있다면 남겨두겠습니다.) 뭔가 이럴 거라고 예상은 했지만… 이렇게 직접 실험해보면서 추후 남들에게 관련 질문을 받을 때 확실하게 말할 수 있는 사람이 되고 싶었다.
 
