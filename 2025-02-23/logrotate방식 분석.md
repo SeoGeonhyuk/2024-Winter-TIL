@@ -143,7 +143,6 @@ sudo strace -f -tt -s 200 logrotate -f /etc/logrotate.d/custom-log
 
 새로운 프로세스를 포크되어 맨 마지막에 포크된 프로세스가 write(1, “seogeonhuk logda”)를 호출하는 것을 확인할 수 있다.
 
-<img width="571" alt="15" src="https://github.com/user-attachments/assets/6c3cb8ff-a2d0-4aeb-ac00-ebd278d35837" />
 
 
 # 결론
