@@ -6,7 +6,8 @@ MySQL에 대한 로그 파일이 지속적으로 커져 추후 로그를 보며 
 
 MySQL을 찾아보니 FLUSH LOGS라는 SQL Statement를 사용해서 전반적인 로그 파일을 재시작시킬 수 있다고 한다.
 
-![image.png](attachment:54370d6c-bc7f-41bc-a6bd-a47382d980d6:image.png)
+<img width="1130" alt="1" src="https://github.com/user-attachments/assets/c96b5fc2-9789-4759-8e6a-73bb644ee26c" />
+
 
 [MySQL :: MySQL 8.4 Reference Manual :: 15.7.8.3 FLUSH Statement](https://dev.mysql.com/doc/refman/8.4/en/flush.html)
 
@@ -14,9 +15,11 @@ MySQL을 찾아보니 FLUSH LOGS라는 SQL Statement를 사용해서 전반적�
 
 - General Log, Error Log, Slow Query Log: 로그 파일이 그냥 닫혔다가 열림(정확히 말하면 fd 테이블에서 없어졌다가 다시 등록됨) 따라서, 일자별로 분리된 로그 파일들을 얻고 싶다면 파일의 이름을 바꿔야 한다. 만약 파일의 이름을 바꾸게 되면, MySQL 프로세스에서는 해당 로그 파일들이 없다는 것을 인지하고 로그 파일들을 새로 만들고 거기다 이후 로그를 기록하게 된다.
     
-    ![image.png](attachment:7ea9971c-fa90-4c6a-bc86-f5d6a8e0c37d:image.png)
+    <img width="1157" alt="2" src="https://github.com/user-attachments/assets/169bd44b-12e9-45aa-9625-43d710e44179" />
+
     
-    ![image.png](attachment:c4121c88-0c83-41fd-9b84-fb9b96902890:image.png)
+    <img width="1099" alt="3" src="https://github.com/user-attachments/assets/9b248137-7f6a-4c97-9c36-7a1b4c689fb6" />
+
     
 - Binary Log: General Log, Error Log, Slow Query Log와 다르게 단순히 닫혔다 열리는 것이 아니라 기존 시퀀스 넘버에 +1을 한 이름을 가진 Binary Log 파일을 생성하고 거기에 이후 로그들을 기록하게 된다.
     
@@ -27,13 +30,15 @@ MySQL을 찾아보니 FLUSH LOGS라는 SQL Statement를 사용해서 전반적�
 
 RELOAD 권한에 대해서 알아본 결과 FLUSH에 관련된 SQL Statement를 실행할 수 있도록 하는 권한이고 DML, DCL, DDL에 관련된 SQL Statement는 실행할 수 없다고 나온다.
 
-![image.png](attachment:77db68d7-a148-4505-8027-5b5b34ac4760:image.png)
+<img width="1133" alt="4" src="https://github.com/user-attachments/assets/50f92f93-ac44-41db-a7b4-d908fe0cd58a" />
+
 
 [MySQL :: MySQL 8.4 Reference Manual :: 8.2.2 Privileges Provided by MySQL](https://dev.mysql.com/doc/refman/8.4/en/privileges-provided.html#priv_reload)
 
 또한 mysqladmin에서 해당 권한을 가지고 있는 계정을 통해 mysqladmin flush-logs라는 명령을 입력할 수 있게 된다. 이 명령어는 FLUSH LOGS SQL Statement를 실행하는 것이라고 한다.
 
-![image.png](attachment:5e99fe24-0d84-4a3c-8f82-0aaa65f10df8:image.png)
+<img width="1160" alt="5" src="https://github.com/user-attachments/assets/b78101b7-8eda-4e70-9e8d-d9d094d9c284" />
+
 
 [MySQL :: MySQL 8.4 Reference Manual :: 6.5.2 mysqladmin — A MySQL Server Administration Program](https://dev.mysql.com/doc/refman/8.4/en/mysqladmin.html)
 
@@ -41,11 +46,13 @@ RELOAD 권한에 대해서 알아본 결과 FLUSH에 관련된 SQL Statement를 
 
 ### 기존에 만들어진 데이터베이스에 접근 가능한지 테스트 ⇒ 불가능
 
-![image.png](attachment:7e2b6480-2927-4fe2-8b2b-56262328d1d5:image.png)
+<img width="1168" alt="6" src="https://github.com/user-attachments/assets/c20b90bd-5eb1-4e06-aae0-780744d35583" />
+
 
 ### DDL 테스트 ⇒ 불가능
 
-![image.png](attachment:2d31415b-c0b8-4837-8147-9d008f219f76:image.png)
+<img width="904" alt="7" src="https://github.com/user-attachments/assets/9b83cf68-178b-4f95-9582-0fee953220c0" />
+
 
 ### DML 테스트 ⇒ 불가능(DDL을 못하므로)
 
@@ -62,7 +69,8 @@ RELOAD 권한에 대해서 알아본 결과 FLUSH에 관련된 SQL Statement를 
 
 고민 끝에, 1번의 방식은 MySQL 컨테이너가 외부로 노출될 위험이 존재하다고 판단하고 2번의 방식으로 결정했다. 무엇보다 2번의 방식이 끌렸던 것은 아주 간단하게 외부에서 mysqladmin 명령어를 쓸 수 있었기 때문이다. 
 
-![image.png](attachment:0f1473d8-ba43-46d9-bdec-951d460e052e:image.png)
+<img width="1008" alt="8" src="https://github.com/user-attachments/assets/c122f435-a899-4421-a8a3-1c7abd668470" />
+
 
 그래서 이제 flush-logs를 어떻게 처리할지 고민도 끝났고 본격적으로 작업을 시작했다.
 
@@ -94,19 +102,23 @@ MySQL은 이 fd를 통해 파일을 참조하기 때문에, 파일의 이름이�
 
 예를 들어 mv를 실행한다면 다음과 같은 exec 계열 함수가 오게되고 이후 rename 시스템 콜을 사용하여 경로를 옮기게 된다.
 
-![image.png](attachment:c977812d-e550-4154-a8f6-814df7397f16:image.png)
+<img width="673" alt="9" src="https://github.com/user-attachments/assets/bacbe612-fe54-4f47-9010-3becd19681be" />
 
-![image.png](attachment:0bb44db7-5b10-4928-9535-aae92c6eb085:image.png)
+
+<img width="274" alt="10" src="https://github.com/user-attachments/assets/807b29a4-fbfa-4790-8b23-07ab0bb15d71" />
+
 
 만약 logrotate의 설정 파일이 이렇다면
 
-![image.png](attachment:4a3e9fe2-985e-41ae-9635-9c5fce159f4e:image.png)
+<img width="620" alt="11" src="https://github.com/user-attachments/assets/d65e9f62-6f17-4883-8962-b37870f526bd" />
+
 
 custom2.log 파일을 옮긴 다음 echo “seogeonhyuk logda”를 출력할 것이다.
 
 참고로 echo “seogeonhyuk logda”를 strace로 분석하면 다음과 같다.
 
-![image.png](attachment:1a2c54d1-0c0d-4faa-9668-0a04c9f1581d:image.png)
+<img width="1168" alt="12" src="https://github.com/user-attachments/assets/3a9b40ca-9abe-4beb-9bdf-87fa9b37281b" />
+
 
 맨 끝의 write를 보면 1번 fd에(stdout)에 seogeonhyuk logda라는 메시지를 작성하는 것을 확인할 수 있다.
 
@@ -121,15 +133,18 @@ custom2.log 파일을 옮긴 다음 echo “seogeonhyuk logda”를 출력할 �
 sudo strace -f -tt -s 200 logrotate -f /etc/logrotate.d/custom-log
 ```
 
-![image.png](attachment:8c469410-068f-4080-b136-f86ee89edbd5:image.png)
+<img width="934" alt="13" src="https://github.com/user-attachments/assets/76753868-ea0b-4bc0-97f3-0171d3323cad" />
+
 
 확인해보면 먼저 rename 시스템 콜을 활용해 custom2.log를 custom2.log.1로 옮기고 chmod에 따른 권한 설정을 한 뒤(fchmod는 chmod의 시스템 콜이다.)
 
-![image.png](attachment:1726b373-9e55-4258-abc0-502b6e921025:image.png)
+<img width="987" alt="14" src="https://github.com/user-attachments/assets/91eb196f-c1c3-46e2-8934-20fc00b95e0e" />
+
 
 새로운 프로세스를 포크되어 맨 마지막에 포크된 프로세스가 write(1, “seogeonhuk logda”)를 호출하는 것을 확인할 수 있다.
 
-![image.png](attachment:30eb6a58-9109-4789-b1f7-2e4833d90c93:image.png)
+<img width="571" alt="15" src="https://github.com/user-attachments/assets/6c3cb8ff-a2d0-4aeb-ac00-ebd278d35837" />
+
 
 # 결론
 
