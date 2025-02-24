@@ -113,6 +113,8 @@ MySQL은 이 fd를 통해 파일을 참조하기 때문에, 파일의 이름이�
 <img width="673" alt="9" src="https://github.com/user-attachments/assets/6cf0fb57-3557-4716-93a8-be5fe9047448" />
 
 
+
+
 <img width="274" alt="10" src="https://github.com/user-attachments/assets/25556dc4-5203-49d1-8e9b-e288f3074feb" />
 
 
